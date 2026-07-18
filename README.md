@@ -1,4 +1,185 @@
-# GitHub Copilot CLI
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu n'es pas seul | Chat Anti-Harcèlement</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%); color: #fff; }
+  
+  header { background: linear-gradient(90deg, #16213e 0%, #0f3460 100%); padding: 40px 20px; text-align: center; }
+  header h1 { font-size: 8vw; color: #e94560; text-shadow: 2px 2px 10px #000; margin-bottom: 15px; }
+  .slogan { font-size: 4vw; max-width: 700px; margin: 0 auto; line-height: 1.6; background: rgba(233,69,96,0.1); padding: 20px; border-radius: 15px; border: 2px solid #e94560; }
+  .slogan span { color: #00ff88; font-weight: bold; }
+  
+  .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
+  
+  .alerte { background: #e94560; padding: 15px; border-radius: 10px; text-align: center; font-size: 4vw; margin-bottom: 30px; }
+  
+  .conseils { display: grid; gap: 20px; margin-bottom: 40px; }
+  .card { background: #1e1e3a; padding: 25px; border-radius: 15px; border-left: 5px solid #00aaff; transition: 0.3s; }
+  .card:hover { transform: translateX(10px); border-color: #e94560; }
+  .card h3 { font-size: 5vw; color: #00aaff; margin-bottom: 10px; }
+  .card p { font-size: 4vw; line-height: 1.6; opacity: 0.9; }
+  
+  /* CHAT ANONYME */
+  .chat-box { background: #0f3460; padding: 25px; border-radius: 20px; margin: 40px 0; border: 3px solid #00aaff; }
+  .chat-box h2 { font-size: 6vw; color: #00ff88; text-align: center; margin-bottom: 10px; }
+  .chat-info { font-size: 3.5vw; text-align: center; opacity: 0.8; margin-bottom: 20px; }
+  .chat-messages { background: #111; height: 400px; overflow-y: auto; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+  .message { background: #222; padding: 12px; border-radius: 10px; margin-bottom: 10px; max-width: 80%; }
+  .message.moi { background: #00aaff; margin-left: auto; }
+  .message .pseudo { font-size: 3vw; color: #00ff88; font-weight: bold; margin-bottom: 5px; }
+  .message .texte { font-size: 4vw; }
+  .chat-input { display: flex; gap: 10px; }
+  .chat-input input { flex: 1; padding: 4vw; border-radius: 15px; border: 2px solid #555; background: #222; color: #fff; font-size: 4vw; }
+  .chat-input button { padding: 4vw 6vw; background: #25D366; border: none; border-radius: 15px; color: #fff; font-weight: bold; font-size: 4vw; cursor: pointer; }
+  
+  .cta { background: #0f3460; padding: 30px; border-radius: 20px; text-align: center; margin: 40px 0; }
+  .cta h2 { font-size: 6vw; color: #00ff88; margin-bottom: 15px; }
+  .cta p { font-size: 4vw; margin-bottom: 20px; }
+  
+  .btn-group { display: flex; flex-direction: column; gap: 15px; max-width: 500px; margin: 0 auto; }
+  .btn { padding: 4vw; border-radius: 15px; font-size: 4.5vw; font-weight: bold; text-decoration: none; color: #fff; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .btn-whatsapp { background: #25D366; }
+  .btn-whatsapp:hover { background: #1ebe5b; transform: scale(1.05); }
+  .btn-share { background: #00aaff; }
+  .btn-share:hover { background: #0088cc; transform: scale(1.05); }
+  
+  footer { background: #000; padding: 30px 20px; text-align: center; font-size: 3.5vw; opacity: 0.7; }
+  .toast { position: fixed; top: 10%; left: 50%; transform: translateX(-50%); background: #00ff88; color: #000; padding: 3vw 6vw; border-radius: 15px; font-size: 4vw; display: none; z-index: 100; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TU N'ES PAS SEUL</h1>
+  <div class="slogan">
+    << Tu as été harcelé ? Tu ne sais pas quoi faire pour que ça s'arrête ? 
+    <span>J'ai des conseils à te donner pour que ça s'arrête.</span>
+    Contact moi via WhatsApp au : +225 0700267107 >>
+  </div>
+</header>
+
+<div class="container">
+  
+  <div class="alerte">
+    ⚠️ Si tu es en danger immédiat, parle à un adulte de confiance ou appelle 111
+  </div>
+  
+  <!-- CHAT ANONYME -->
+  <div class="chat-box">
+    <h2>💬 CHAT ANONYME D'ENTRAIDE</h2>
+    <p class="chat-info">Parle librement. Pas de jugement ici. Pseudo auto-généré pour ta sécurité.</p>
+    
+    <div class="chat-messages" id="chatMessages">
+      <div class="message">
+        <div class="pseudo">Modo</div>
+        <div class="texte">Bienvenue. Ici on s'écoute et on s'entraide. Tu n'es pas seul.</div>
+      </div>
+    </div>
+    
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Écris ton message..." onkeypress="if(event.key==='Enter') envoyerMessage()">
+      <button onclick="envoyerMessage()">Envoyer</button>
+    </div>
+  </div>
+  
+  <div class="conseils">
+    <div class="card">
+      <h3>1. N'ENCAISSE PAS EN SILENCE</h3>
+      <p>Parle. À un parent, un prof, un ami. Le harcèlement meurt quand on le dénonce.</p>
+    </div>
+    <div class="card">
+      <h3>2. GARDES LES PREUVES</h3>
+      <p>Messages, photos, vidéos. Ne supprime rien. Ça servira si tu dois voir le proviseur.</p>
+    </div>
+    <div class="card">
+      <h3>3. BLOQUE ET SIGNALE</h3>
+      <p>Sur les réseaux : bloque, signale, mets ton compte en privé.</p>
+    </div>
+  </div>
+  
+  <div class="cta">
+    <h2>Besoin de parler en privé ?</h2>
+    <p>Je réponds à tous les messages WhatsApp personnellement.</p>
+    <div class="btn-group">
+      <a href="https://wa.me/2250700267107?text=Bonjour, j'ai besoin d'aide concernant du harcèlement." class="btn btn-whatsapp" target="_blank">
+        💬 M'ÉCRIRE SUR WHATSAPP
+      </a>
+      <button class="btn btn-share" id="btnShare">
+        🔗 PARTAGER CE SITE
+      </button>
+    </div>
+  </div>
+  
+</div>
+
+<footer>
+  <p>Site créé pour aider. Tu mérites le respect.</p>
+  <p>⚠️ Le chat est public. Ne donne jamais d'infos perso: nom, école, adresse.</p>
+</footer>
+
+<div class="toast" id="toast">LIEN COPIÉ ! Partage-le pour aider quelqu'un</div>
+
+<script>
+// PSEUDO ANONYME
+const pseudos = ["Écoute", "Courage", "Espoir", "Force", "Lumière", "Paix", "Soutien"];
+const monPseudo = pseudos[Math.floor(Math.random() * pseudos.length)];
+
+// CHAT AVEC SAUVEGARDE
+const chat = document.getElementById('chatMessages');
+let savedMessages = JSON.parse(localStorage.getItem('chatAntiHarcelement')) || [];
+
+// Charger les messages sauvegardés
+savedMessages.forEach(m => {
+  const msg = document.createElement('div');
+  msg.className = m.classe;
+  msg.innerHTML = `<div class="pseudo">${m.pseudo}</div><div class="texte">${m.texte}</div>`;
+  chat.appendChild(msg);
+});
+
+function envoyerMessage() {
+  const input = document.getElementById('chatInput');
+  const texte = input.value.trim();
+  if(texte === '') return;
+  
+  const msg = document.createElement('div');
+  msg.className = 'message moi';
+  msg.innerHTML = `<div class="pseudo">${monPseudo}</div><div class="texte">${texte}</div>`;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+  
+  // Sauvegarder
+  savedMessages.push({pseudo: monPseudo, texte: texte, classe: 'message moi'});
+  localStorage.setItem('chatAntiHarcelement', JSON.stringify(savedMessages));
+  
+  input.value = '';
+  
+  // Réponse auto du modo
+  setTimeout(() => {
+    const rep = document.createElement('div');
+    rep.className = 'message';
+    rep.innerHTML = `<div class="pseudo">Modo</div><div class="texte">Merci pour ton message. N'hésite pas à parler en privé WhatsApp si tu veux.</div>`;
+    chat.appendChild(rep);
+    chat.scrollTop = chat.scrollHeight;
+  }, 1000);
+}
+
+// PARTAGE
+const btnShare = document.getElementById('btnShare');
+const toast = document.getElementById('toast');
+btnShare.onclick = () => {
+  const lien = window.location.href;
+  navigator.clipboard.writeText(lien);
+  toast.style.display = 'block';
+  setTimeout(()=>toast.style.display='none', 3000);
+}
+</script>
+
+</body>
+</html># GitHub Copilot CLI
 
 The power of GitHub Copilot, now in your terminal.
 
